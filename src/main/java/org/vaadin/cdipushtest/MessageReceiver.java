@@ -2,12 +2,11 @@ package org.vaadin.cdipushtest;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
+import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
-import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
 import javax.naming.InitialContext;
@@ -41,21 +40,14 @@ public class MessageReceiver implements MessageListener {
         Topic chatTopic = (Topic) ctx.lookup(Resources.TOPIC_NAME);
         ConnectionFactory factory
                 = (ConnectionFactory) ctx.lookup("ConnectionFactory");
-        Connection c = factory.createConnection();
+        JMSContext c = factory.createContext();
 
-        c.createSession(false, Session.AUTO_ACKNOWLEDGE)
-                .createConsumer(chatTopic)
-                .setMessageListener(MessageReceiver.this);
-
+        c.createConsumer(chatTopic).setMessageListener(this);
+        
         c.start();
 
         ui.addDetachListener(e -> {
-            try {
-                c.close();
-            } catch (JMSException ex) {
-                Logger.getLogger(MessageReceiver.class.getName()).
-                        log(Level.SEVERE, null, ex);
-            }
+            c.close();
         });
 
     }
