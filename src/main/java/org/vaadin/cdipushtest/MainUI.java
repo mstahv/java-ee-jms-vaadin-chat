@@ -33,7 +33,8 @@ public class MainUI extends UI {
     @Resource(name = Resources.TOPIC_NAME)
     private Topic topic;
 
-    private final TextField msgInput = new MTextField().withInputPrompt("Message");
+    private final TextField msgInput = new MTextField().withInputPrompt(
+            "Message");
 
     private final MVerticalLayout messages = new MVerticalLayout().withMargin(
             false);
@@ -42,29 +43,33 @@ public class MainUI extends UI {
 
     @Override
     protected void init(VaadinRequest request) {
-        name = request.
-                getWrappedSession().
-                getId().substring(0, 4) + "(" + Page.getCurrent().
-                getWebBrowser().getAddress() + ")";
+        createName(request);
 
-        MessageReceiver.registerUI(this);
+        MessageReceiver.register(this);
 
         postMessage(name + " joined chat!");
 
-        msgInput.addValueChangeListener(e -> {
+        PrimaryButton send = new PrimaryButton("Send");
+        send.addClickListener(e -> {
             postMessage(name + ": " + msgInput.getValue());
             msgInput.selectAll();
         });
-
         setContent(
-                new MVerticalLayout(
-                        new RichText().withMarkDownResource("/welcome.md"),
-                        new MHorizontalLayout(
-                                msgInput,
-                                new PrimaryButton("Send"))
-                        .alignAll(Alignment.BOTTOM_LEFT),
-                        messages
-                ));
+            new MVerticalLayout(
+                    new RichText().withMarkDownResource("/welcome.md"),
+                    new MHorizontalLayout(
+                            msgInput,
+                            send)
+                    .alignAll(Alignment.BOTTOM_LEFT),
+                    messages
+            )
+        );
+    }
+
+    static int i = 1;
+
+    public void createName(VaadinRequest request) {
+        name = "User " + i++;
     }
 
     public void onMessage(String msg) {
