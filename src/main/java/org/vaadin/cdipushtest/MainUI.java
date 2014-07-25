@@ -45,7 +45,7 @@ public class MainUI extends UI {
     protected void init(VaadinRequest request) {
         createName(request);
 
-        MessageReceiver.register(this);
+        new MyMessageReceiver(this).startListening();
 
         postMessage(name + " joined chat!");
 
