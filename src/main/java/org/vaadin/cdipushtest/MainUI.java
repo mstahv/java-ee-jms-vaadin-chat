@@ -5,6 +5,7 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.cdi.CDIUI;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.shared.ui.ui.Transport;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
@@ -21,7 +22,7 @@ import org.vaadin.maddon.layouts.MHorizontalLayout;
 import org.vaadin.maddon.layouts.MVerticalLayout;
 
 @CDIUI
-@Push
+@Push(transport = Transport.LONG_POLLING)
 @Theme("dawn")
 public class MainUI extends UI {
 
